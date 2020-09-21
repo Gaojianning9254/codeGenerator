@@ -46,7 +46,7 @@ public class SysGeneratorController {
 	}
 	
 	/**
-	 * 生成代码
+	 * 生成代码了
 	 */
 	@RequestMapping("/code")
 	public void code(String tables, HttpServletResponse response) throws IOException{
