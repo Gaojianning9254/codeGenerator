@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${package}.dao.${moduleName}.${className}Mapper">
+    
+    <resultMap type="${package}.entity.${moduleName}.${className}" id="BaseResultMap">
+#foreach($column in $columns)
+    #if(${column.dataType} == "int" || ${column.dataType} == "integer" )
+    <result property="${column.attrname}" jdbcType="INTEGER" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "tinyint")
+    <result property="${column.attrname}" jdbcType="TINYINT" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "bigint")
+    <result property="${column.attrname}" jdbcType="BIGINT" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "varchar")
+    <result property="${column.attrname}" jdbcType="VARCHAR" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "decimal")
+    <result property="${column.attrname}" jdbcType="DECIMAL" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "double")
+    <result property="${column.attrname}" jdbcType="DOUBLE" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "datetime" ||${column.dataType} == "date"||${column.dataType} == "timestamp" || ${column.dataType} == "time" )
+    <result property="${column.attrname}" jdbcType="TIMESTAMP" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "float")
+    <result property="${column.attrname}" jdbcType="FLOAT" column="${column.columnName}"/>
+    #elseif(${column.dataType} == "numeric")
+    <result property="${column.attrname}" jdbcType="NUMERIC" column="${column.columnName}"/>
+    #else
+    <result property="${column.attrname}" jdbcType="${column.dataType}" column="${column.columnName}"/>
+    #end
+#end
+    </resultMap>
+
+    <sql id="Base_Column_List">
+#foreach($column in $columns)
+ ${column.columnName}#if($foreach.hasNext),#end
+#end
+
+    </sql>
+
+</mapper>
