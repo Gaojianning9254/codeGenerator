@@ -1,7 +1,7 @@
 package ${package}.service.${moduleName};
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import ${mainPath}.common.utils.PageUtils;
+##import ${mainPath}.common.utils.PageUtils;
 import ${package}.entity.${moduleName}.${className};
 
 import java.util.Map;
