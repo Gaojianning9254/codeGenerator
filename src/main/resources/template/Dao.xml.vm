@@ -4,36 +4,90 @@
 <mapper namespace="${package}.dao.${moduleName}.${className}Mapper">
 
     <resultMap type="${package}.entity.${moduleName}.${className}" id="BaseResultMap">
-#foreach($column in $columns)
-    #if(${column.dataType} == "int" || ${column.dataType} == "integer" )
-    <result property="${column.attrname}" jdbcType="INTEGER" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "tinyint")
-    <result property="${column.attrname}" jdbcType="TINYINT" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "bigint")
-    <result property="${column.attrname}" jdbcType="BIGINT" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "varchar")
-    <result property="${column.attrname}" jdbcType="VARCHAR" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "decimal")
-    <result property="${column.attrname}" jdbcType="DECIMAL" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "double")
-    <result property="${column.attrname}" jdbcType="DOUBLE" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "datetime" ||${column.dataType} == "date"||${column.dataType} == "timestamp" || ${column.dataType} == "time" )
-    <result property="${column.attrname}" jdbcType="TIMESTAMP" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "float")
-    <result property="${column.attrname}" jdbcType="FLOAT" column="${column.columnName}"/>
-    #elseif(${column.dataType} == "numeric")
-    <result property="${column.attrname}" jdbcType="NUMERIC" column="${column.columnName}"/>
-    #else
-    <result property="${column.attrname}" jdbcType="${column.dataType}" column="${column.columnName}"/>
-    #end
-#end
+        #foreach($column in $columns)
+            #if(${column.dataType} == "int" || ${column.dataType} == "integer" )
+                <result property="${column.attrname}" jdbcType="INTEGER" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "tinyint")
+                <result property="${column.attrname}" jdbcType="TINYINT" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "bigint")
+                <result property="${column.attrname}" jdbcType="BIGINT" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "varchar")
+                <result property="${column.attrname}" jdbcType="VARCHAR" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "decimal")
+                <result property="${column.attrname}" jdbcType="DECIMAL" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "double")
+                <result property="${column.attrname}" jdbcType="DOUBLE" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "datetime" ||${column.dataType} == "date"||${column.dataType} ==
+                "timestamp" || ${column.dataType} == "time" )
+                <result property="${column.attrname}" jdbcType="TIMESTAMP" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "float")
+                <result property="${column.attrname}" jdbcType="FLOAT" column="${column.columnName}"/>
+            #elseif(${column.dataType} == "numeric")
+                <result property="${column.attrname}" jdbcType="NUMERIC" column="${column.columnName}"/>
+            #else
+                <result property="${column.attrname}" jdbcType="${column.dataType}" column="${column.columnName}"/>
+            #end
+        #end
     </resultMap>
 
     <sql id="Base_Column_List">
 #foreach($column in $columns)
- ${column.columnName}#if($foreach.hasNext),#end
-#end
+        ${column.columnName}#if($foreach.hasNext),#end
+    #end
 
     </sql>
 
+    <sql id="where">
+        #foreach( $column in ${columns} )
+            #if(${column.dataType}=="varchar")
+                <if test="pars.${column.attrname}!=null and pars.${column.attrname}!=''">
+                    AND ${column.columnName} = #{pars.${column.attrname}}
+                </if>
+            #else
+                <if test="pars.${column.attrname}!=null">
+                    AND ${column.columnName} = #{pars.${column.attrname}}
+                </if>
+            #end
+        #end
+        <if test="pars.ids!=null and pars.ids.size()>0">
+            AND id in
+            <foreach collection="pars.ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </sql>
+    <select id="query${className}" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM ${tableName}
+        <where>
+            <include refid="where"/>
+        </where>
+        <if test="pars.orderBy!=null and pars.orderBy!=''">
+            ORDER BY ${pars.orderBy}
+        </if>
+    </select>
+
+    <update id="update${className}">
+        UPDATE ${tableName} SET
+        <trim suffixOverrides="," suffix="">
+            #foreach($column in ${columns})
+                #if(${column.attrname}!=${pk})
+                    #if(${column.dataType}=="varchar")
+                        <if test="cols.${column.attrname}!=null and cols.${column.attrname}!=''">
+                            ${column.columnName} = #{cols.${column.attrname}},
+                        </if>
+                    #else
+                        <if test="cols.${column.attrname}!=null">
+                            ${column.columnName} = #{cols.${column.attrname}},
+                        </if>
+                    #end
+                #end
+            #end
+        </trim>
+        WHERE
+        <trim prefixOverrides="AND|OR" prefix="">
+            <include refid="where"/>
+        </trim>
+    </update>
 </mapper>

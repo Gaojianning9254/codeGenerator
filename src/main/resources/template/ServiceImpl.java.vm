@@ -1,5 +1,6 @@
 package ${package}.service.${moduleName}.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -25,5 +26,16 @@ public class ${className}ServiceImpl extends ServiceImpl<${className}Mapper, ${c
 ##
 ##        return new PageUtils(page);
 ##    }
+    @Autowired
+    private  ${className}Mapper  ${classname}Mapper;
 
+    public PageInfo<${className}> query${className}(${className} cols,${className} pars,int pageNum, int pageSize, boolean count){
+        PageHelper.startPage(pageNum, pageSize, count);
+        List<${className}> list = ${className}Mapper.query${className}(cols, pars);
+        return new PageInfo<${className}>(list);
+    }
+
+    public void update${className}(${className} entity) throws Exception{
+            ${classname}Mapper.update${className}(entity,entity.getId());
+    }
 }

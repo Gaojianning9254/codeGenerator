@@ -16,5 +16,8 @@ import java.util.Map;
 public interface ${className}Service extends IService<${className}> {
 
 ##    PageUtils queryPage(Map<String, Object> params);
+    PageInfo<${className}> query${className}(${className} cols, ${className} pars, int pageNum, int pageSize, boolean count);
+
+    void update${className}(${className} entity) throws Exception;
 }
 

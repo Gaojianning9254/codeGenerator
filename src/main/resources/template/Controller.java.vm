@@ -31,6 +31,34 @@ public class ${className}Controller {
     @Autowired
     private ${className}Service ${classname}Service;
 
+
+
+    @ApiOperation(value = "列表", notes = "传分页带分页，不传分页不带分页", httpMethod = "POST")
+    @RequestMapping(value = "/query${className}", method = RequestMethod.POST)
+    public R query${className}(@RequestBody ${className} ${classname}, HttpServletRequest request) {
+##        Long companyNum = getCompanyNum(request);
+//        Long companyNum = 900000001L;
+##        ydActivityLog.setCompanyNum(companyNum);
+##        if (ydActivityLog.getLotteryStatus() != null && ydActivityLog.getLotteryStatus() == -1) {
+##            ydActivityLog.setLotteryStatus(null);
+##        }
+        //判断分页
+        if (entity.getPageNum() == 0) {
+            List<${className}> listResult = ${classname}Service.query${className}(${classname}, 1, 0, false).getList();
+            return R.ok().put("result", listResult);
+        } else {
+            PageInfo<${className}> pageResult = ${classname}Service.query${className}(${classname}, ${classname}.getPageNum(), ${classname}.getPageSize(), true);
+            return R.ok().put("result", pageResult);
+        }
+    }
+
+
+    @ApiOperation(value = "修改单表)", notes = "修改单表", httpMethod = "POST")
+    @RequestMapping(value = "/updateLotteryInfo", method = RequestMethod.POST)
+    public R update${className}(@RequestBody ${className} ${classname}, HttpServletRequest request) {
+            ${classname}Service.update${className}(${classname})
+        return R.ok();
+    }
     /**
      * 列表
      */
